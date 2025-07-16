@@ -17,11 +17,15 @@ const rawJsonValidation = useValidation({
   source: rawJson,
   rules: [
     {
-      validator: v => v === '' || JSON5.parse(v),
+      validator: (v) => v === '' || JSON5.parse(v),
       message: 'Provided JSON is not valid.',
     },
   ],
 });
+
+function compressJson() {
+  rawJson.value = JSON.stringify(JSON5.parse(rawJson.value), null, 0);
+}
 </script>
 
 <template>
@@ -32,6 +36,9 @@ const rawJsonValidation = useValidation({
       </n-form-item>
       <n-form-item label="Indent size :" label-placement="left" label-width="100" :show-feedback="false">
         <n-input-number v-model:value="indentSize" min="0" max="10" style="width: 100px" />
+      </n-form-item>
+      <n-form-item label-placement="left" label-width="100">
+        <n-button @click="compressJson">压缩</n-button>
       </n-form-item>
     </div>
   </div>
@@ -62,6 +69,7 @@ const rawJsonValidation = useValidation({
 <style lang="less" scoped>
 .result-card {
   position: relative;
+
   .copy-button {
     position: absolute;
     top: 10px;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatXml, isValidXML } from './xml-formatter.service';
+import { formatXml, isValidXML, minifyXml } from './xml-formatter.service';
 import type { UseValidationRule } from '@/composable/validation';
 
 const defaultValue = '<hello><world>foo</world><world>bar</world></hello>';
@@ -12,6 +12,10 @@ function transformer(value: string) {
     collapseContent: collapseContent.value,
     lineSeparator: '\n',
   });
+}
+
+function compressXml() {
+  minifyXml(defaultValue);
 }
 
 const rules: UseValidationRule<string>[] = [
@@ -30,6 +34,9 @@ const rules: UseValidationRule<string>[] = [
       </n-form-item>
       <n-form-item label="Indent size:" label-placement="left" label-width="100" :show-feedback="false">
         <n-input-number v-model:value="indentSize" min="0" max="10" w-100px />
+      </n-form-item>
+      <n-form-item label-placement="left" label-width="100">
+        <n-button @click="compressXml">压缩</n-button>
       </n-form-item>
     </div>
   </div>

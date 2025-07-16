@@ -1,7 +1,7 @@
 import xmlFormat, { type XMLFormatterOptions } from 'xml-formatter';
 import { withDefaultOnError } from '@/utils/defaults';
 
-export { formatXml, isValidXML };
+export { formatXml, isValidXML, minifyXml };
 
 function cleanRawXml(rawXml: string): string {
   return rawXml.trim();
@@ -9,6 +9,13 @@ function cleanRawXml(rawXml: string): string {
 
 function formatXml(rawXml: string, options?: XMLFormatterOptions): string {
   return withDefaultOnError(() => xmlFormat(cleanRawXml(rawXml), options) ?? '', '');
+}
+
+function minifyXml(rawXml: string) {
+  return rawXml
+    .replace(/\<![ \r\n\t]*(--([^\-]|[\r\n]|-[^\-])*--[ \r\n\t]*)\>/g, '')
+    .replace(/[ \r\n\t]{1,}xmlns/g, ' xmlns')
+    .replace(/>\s{0,}</g, '><');
 }
 
 function isValidXML(rawXml: string): boolean {
@@ -21,8 +28,7 @@ function isValidXML(rawXml: string): boolean {
   try {
     xmlFormat(cleanedRawXml);
     return true;
-  }
-  catch (e) {
+  } catch (e) {
     return false;
   }
 }
